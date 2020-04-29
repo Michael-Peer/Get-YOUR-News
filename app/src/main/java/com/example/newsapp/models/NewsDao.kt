@@ -3,7 +3,7 @@ package com.example.newsapp.models
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.newsapp.Utils.GithubTypeConverters
+import com.example.newsapp.Utils.MyTypeConvertors
 
 @Dao
 interface NewsDao {
@@ -15,7 +15,7 @@ interface NewsDao {
     fun getNews(): LiveData<News>
 }
 
-@TypeConverters(GithubTypeConverters::class)
+@TypeConverters(MyTypeConvertors::class)
 @Database(entities = [News::class], version = 3)
 abstract class NewsDatabase : RoomDatabase() {
     abstract val news: NewsDao

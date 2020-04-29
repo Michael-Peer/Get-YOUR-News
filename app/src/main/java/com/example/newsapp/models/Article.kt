@@ -3,7 +3,7 @@ package com.example.newsapp.models
 
 import androidx.room.Embedded
 import androidx.room.TypeConverters
-import com.example.newsapp.Utils.GithubTypeConverters
+import com.example.newsapp.Utils.MyTypeConvertors
 import com.google.gson.annotations.SerializedName
 
 data class Article(
@@ -17,7 +17,7 @@ data class Article(
     val publishedAt: String? = null,
     @Embedded(prefix = "source_")
     @SerializedName("source")
-    @TypeConverters(GithubTypeConverters::class)
+    @TypeConverters(MyTypeConvertors::class)
     val source: Source? = null,
     @SerializedName("title")
     val title: String? = null,

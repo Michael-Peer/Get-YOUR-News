@@ -6,7 +6,7 @@ import com.example.newsapp.models.Source
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class GithubTypeConverters {
+class MyTypeConvertors {
         @TypeConverter
         fun stringToNews(data:String):List<Article> {
              val gson = Gson()
