@@ -12,7 +12,7 @@ import retrofit2.http.Query
 
 private const val BASE_URL = "https://newsapi.org/"
 
-private const val API_KEY = "934de238d46c4c0c88825b1c653a56d8"
+private const val API_KEY = "API-KEY" //TODO:Move to constants
 
 
 private val moshi = Moshi.Builder()
@@ -29,7 +29,7 @@ interface NewsApiService {
     @GET("v2/top-headlines")
     fun getNews(
         @Query("country") country: String,
-        @Query("apiKey") apiKey: String
+        @Query("apiKey") apiKey: String. //TODO: Store const key and send
         ): Deferred<News>
 }
 
