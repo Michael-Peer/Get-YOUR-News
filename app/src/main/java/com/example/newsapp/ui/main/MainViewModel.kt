@@ -84,7 +84,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
-     * Factory for constructing DevByteViewModel with parameter
+     * Factory for constructing MainViewModel with parameter
      */
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
