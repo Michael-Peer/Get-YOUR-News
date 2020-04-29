@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -21,8 +22,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     // the Coroutine runs using the Main (UI) dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    private val database = getDatabase(application)
-    private val newsRepo = NewsRepository(database)
+//    private val database = getDatabase(application)
+//    private val newsRepo = NewsRepository(database)
+
 
     private val _articles = MutableLiveData<List<Article>>()
 
@@ -34,27 +36,60 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val totalResults: LiveData<Int>
         get() = _totalResults
 
-   val news = newsRepo.news
+//    private var _networkError = MutableLiveData<Boolean>(false)
+//
+//    val networkError: LiveData<Boolean>
+//        get() = _networkError
+
+    private var _isNetworkError = MutableLiveData<Boolean>(false)
+
+    val isNetworkError: LiveData<Boolean>
+        get() = _isNetworkError
+
+
+
+
+
+    private val newsRepo = NewsRepository(getDatabase(application))
+
+    val news = newsRepo.news
 
 
     init {
-        coroutineScope.launch {
-            newsRepo.refreshNews()
-        }
+        Log.i("MainViewModel", "---init---")
+        refreshFromRepo()
+//        coroutineScope.launch {
+//            newsRepo.refreshNews()
+//        }
 //    getNewsFromApi()
 //    refreshFromNetwork()
     }
 
-     fun extractData(news: News) {
-         Log.i("MainViewModel", "inside extractData function")
-         Log.i("MainViewModel", "----------------------------")
-         Log.i("MainViewModel", "$news")
+    private fun refreshFromRepo() {
+        Log.i("MainViewModel", "refreshFromRepo")
+        coroutineScope.launch {
+            Log.i("MainViewModel", "refreshFromRepo --- scope")
+
+            try {
+                Log.i("MainViewModel", "refreshFromRepo --- try")
+                newsRepo.refreshNews()
+            }
+            catch (e: IOException) {
+                Log.i("MainViewModel", "error: $e")
+            }
+        }
+    }
+
+    fun extractData(news: News) {
+//         Log.i("MainViewModel", "inside extractData function")
+//         Log.i("MainViewModel", "----------------------------")
+//         Log.i("MainViewModel", "$news")
          _totalResults.value = news.totalResults
          _articles.value = news.articles
-         Log.i("MainViewModel", "----------------------------")
-         Log.i("MainViewModel", "totalResults: $_totalResults")
-         Log.i("MainViewModel", "----------------------------")
-         Log.i("MainViewModel", "articles: $_articles")
+//         Log.i("MainViewModel", "----------------------------")
+//         Log.i("MainViewModel", "totalResults: $_totalResults")
+//         Log.i("MainViewModel", "----------------------------")
+//         Log.i("MainViewModel", "articles: $_articles")
 
 
     }

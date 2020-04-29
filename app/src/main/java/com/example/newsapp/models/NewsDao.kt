@@ -16,7 +16,7 @@ interface NewsDao {
 }
 
 @TypeConverters(MyTypeConvertors::class)
-@Database(entities = [News::class], version = 3)
+@Database(entities = [News::class], version = 13)
 abstract class NewsDatabase : RoomDatabase() {
     abstract val news: NewsDao
 }
