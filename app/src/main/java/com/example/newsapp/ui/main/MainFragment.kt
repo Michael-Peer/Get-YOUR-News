@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.newsapp.R
+import com.example.newsapp.Utils.ResultState
 import com.example.newsapp.viewmodels.Factory
 import com.example.newsapp.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.main_fragment.*
@@ -35,19 +36,20 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         //        network_button.setOnClickListener {
-        viewModel.news.observe( viewLifecycleOwner, Observer {
-            it?.let {
-                viewModel.extractData(it)
-            }
 
-        }
 
-        )
+
 //        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.news.observe( viewLifecycleOwner, Observer {
+            it?.let {
+                viewModel.extractData(it)
+            }
+
+        })
 
         search_button.setOnClickListener {
             Log.i("MainFragment", "Search button clicked")
@@ -56,6 +58,14 @@ class MainFragment : Fragment() {
             else
                 viewModel.onSearchButtonClicked(search_input.text.toString())
         }
+
+        viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ResultState.Success -> { /* show success in UI */ }
+                is ResultState.Failure -> {                 Toast.makeText(activity, "${it.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        })
 
 
 

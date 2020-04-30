@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.newsapp.Utils.ResultState
 import com.example.newsapp.databases.getDatabase
 import com.example.newsapp.models.Article
 import com.example.newsapp.models.News
@@ -47,6 +48,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     //expose networkError
     val isNetworkError: LiveData<Boolean>
         get() = _isNetworkError
+
+    private var _stateLiveData = MutableLiveData<ResultState>()
+    val stateLiveData: LiveData<ResultState>
+        get() = _stateLiveData
+
 
 
     //repository
@@ -125,9 +131,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+//    fun onSearchButtonClicked(input: String) {
+//        coroutineScope.launch {
+//   newsRepo.refreshNews1(input)
+//            Log.i("MainViewModel", "inside onSearchButtonClicked ${news.value}")
+//
+//        }
+//    }
+
     fun onSearchButtonClicked(input: String) {
         coroutineScope.launch {
-            newsRepo.refreshNews1(input)
+            val resultState=  newsRepo.insertToDatabase(input)
+            _stateLiveData.value = resultState
+            Log.i("MainViewModel", "inside onSearchButtonClicked ${news.value}")
+
         }
     }
 
