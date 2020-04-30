@@ -42,7 +42,7 @@ class NewsRepository(private val database: NewsDatabase) {
             val dataList =
                 NewsApi.retrofitService.getNews(input, "934de238d46c4c0c88825b1c653a56d8").await()
             if (dataList.totalResults < 1) {
-                return@withContext ResultState.Failure("Reason of error...")
+                return@withContext ResultState.Failure("We didn't find any data, please correct your input")
             } else {
                 database.news.insertAll(dataList)
                 return@withContext ResultState.Success

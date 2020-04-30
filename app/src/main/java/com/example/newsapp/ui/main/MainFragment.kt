@@ -62,7 +62,7 @@ class MainFragment : Fragment() {
         viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ResultState.Success -> { /* show success in UI */ }
-                is ResultState.Failure -> {                 Toast.makeText(activity, "${it.message}", Toast.LENGTH_LONG).show()
+                is ResultState.Failure -> { Toast.makeText(activity, it.message, Toast.LENGTH_LONG).show()
                 }
             }
         })
