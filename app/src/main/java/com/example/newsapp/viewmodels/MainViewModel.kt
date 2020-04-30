@@ -78,7 +78,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         coroutineScope.launch {
             Log.i("MainViewModel", "refreshFromRepo --- scope")
             try {
-                _networkError.value = false
+//                _networkError.value = false
                 _isNetworkError.value = false
                 Log.i("MainViewModel", "refreshFromRepo --- try")
                 newsRepo.refreshNews()
