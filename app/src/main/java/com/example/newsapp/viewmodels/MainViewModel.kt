@@ -125,6 +125,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun onSearchButtonClicked(input: String) {
+        coroutineScope.launch {
+            newsRepo.refreshNews1(input)
+        }
+    }
+
     //clear job and cancel coroutine
     override fun onCleared() {
         super.onCleared()

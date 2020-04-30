@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.newsapp.R
 import com.example.newsapp.viewmodels.Factory
 import com.example.newsapp.viewmodels.MainViewModel
+import kotlinx.android.synthetic.main.main_fragment.*
 
 class MainFragment : Fragment() {
 
@@ -47,6 +48,14 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        search_button.setOnClickListener {
+            Log.i("MainFragment", "Search button clicked")
+            if(search_input.text.isNullOrEmpty())
+                Toast.makeText(activity, "Input Error", Toast.LENGTH_LONG).show()
+            else
+                viewModel.onSearchButtonClicked(search_input.text.toString())
+        }
 
 
 
