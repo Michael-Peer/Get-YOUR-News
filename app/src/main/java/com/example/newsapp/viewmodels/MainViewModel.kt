@@ -1,13 +1,15 @@
-package com.example.newsapp.ui.main
+package com.example.newsapp.viewmodels
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.newsapp.databases.getDatabase
 import com.example.newsapp.models.Article
 import com.example.newsapp.models.News
-import com.example.newsapp.models.getDatabase
-import com.example.newsapp.models.repository.NewsRepository
 import com.example.newsapp.network.NewsApi
+import com.example.newsapp.repositories.NewsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,12 +29,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
 
     private val _articles = MutableLiveData<List<Article>>()
-
+    //expose articles
     val articles: LiveData<List<Article>>
         get() = _articles
 
     private val _totalResults = MutableLiveData<Int>()
-
+    //expose results
     val totalResults: LiveData<Int>
         get() = _totalResults
 
@@ -42,21 +44,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 //        get() = _networkError
 
     private var _isNetworkError = MutableLiveData<Boolean>(false)
-
+    //expose networkError
     val isNetworkError: LiveData<Boolean>
         get() = _isNetworkError
 
 
-
-
-
-    private val newsRepo = NewsRepository(getDatabase(application))
+    //repository
+    private val newsRepo = NewsRepository(
+        getDatabase(
+            application
+        )
+    )
 
     val news = newsRepo.news
 
 
     init {
         Log.i("MainViewModel", "---init---")
+        Log.i("MainViewModel", "---${_isNetworkError.value}---")
         refreshFromRepo()
 //        coroutineScope.launch {
 //            newsRepo.refreshNews()
@@ -65,27 +70,38 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 //    refreshFromNetwork()
     }
 
+
+    //try to fetch from network. if not succesed, we already have data from chace
+    //TODO: refresh strategy
     private fun refreshFromRepo() {
         Log.i("MainViewModel", "refreshFromRepo")
         coroutineScope.launch {
             Log.i("MainViewModel", "refreshFromRepo --- scope")
-
             try {
+                _networkError.value = false
+                _isNetworkError.value = false
                 Log.i("MainViewModel", "refreshFromRepo --- try")
                 newsRepo.refreshNews()
-            }
-            catch (e: IOException) {
+
+            } catch (e: IOException) {
                 Log.i("MainViewModel", "error: $e")
+                _isNetworkError.value = true
+
             }
         }
     }
 
+    fun onNetworkError() {
+        _isNetworkError.value = true
+    }
+
+    //extract data from main model
     fun extractData(news: News) {
 //         Log.i("MainViewModel", "inside extractData function")
 //         Log.i("MainViewModel", "----------------------------")
 //         Log.i("MainViewModel", "$news")
-         _totalResults.value = news.totalResults
-         _articles.value = news.articles
+        _totalResults.value = news.totalResults
+        _articles.value = news.articles
 //         Log.i("MainViewModel", "----------------------------")
 //         Log.i("MainViewModel", "totalResults: $_totalResults")
 //         Log.i("MainViewModel", "----------------------------")
@@ -93,10 +109,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
 
     }
-
-
-
-
 
 
     fun getNewsFromApi() {
@@ -113,21 +125,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    //clear job and cancel coroutine
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
     }
 
-    /**
-     * Factory for constructing MainViewModel with parameter
-     */
-    class Factory(val app: Application) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return MainViewModel(app) as T
-            }
-            throw IllegalArgumentException("Unable to construct viewmodel")
-        }
-    }
+
 }

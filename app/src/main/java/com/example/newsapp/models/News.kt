@@ -7,9 +7,11 @@ import androidx.room.TypeConverters
 import com.example.newsapp.Utils.MyTypeConvertors
 import com.google.gson.annotations.SerializedName
 
+//"Main" model
 @Entity(tableName = "news")
 data class News(
-
+    @PrimaryKey(autoGenerate = false)
+    val id: Int = 1,
     @SerializedName("articles")
 //    @Embedded(prefix = "articles_")
     @TypeConverters(MyTypeConvertors::class)
@@ -20,6 +22,5 @@ data class News(
     val totalResults: Int? = 0
 )
 {
-    @PrimaryKey(autoGenerate = true)
-    var id: Int? = 0
+
 }

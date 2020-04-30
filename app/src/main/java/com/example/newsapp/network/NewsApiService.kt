@@ -33,6 +33,7 @@ interface NewsApiService {
         ): Deferred<News>
 }
 
+//only one instance
 object NewsApi{
     val retrofitService: NewsApiService by lazy {
         retrofit.create(NewsApiService::class.java)
