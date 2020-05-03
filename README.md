@@ -2,4 +2,4 @@
 
 ## Development in progress - See wireframe below
 
-![Wireframe](https://user-images.githubusercontent.com/44434337/80579586-fb658400-8a12-11ea-94a5-c634a4593479.png)
+![ללא שם](https://user-images.githubusercontent.com/44434337/80909158-dd5b9480-8d2e-11ea-973f-3638641f4713.png)
