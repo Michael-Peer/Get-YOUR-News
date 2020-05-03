@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import com.example.newsapp.Utils.ResultState
+import com.example.newsapp.auth.FirebaseUserLiveData
 import com.example.newsapp.databases.getDatabase
 import com.example.newsapp.models.Article
 import com.example.newsapp.models.News
@@ -63,6 +65,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     )
 
     val news = newsRepo.news
+
+    enum class AuthState {
+        AUTHENTICATED, UNAUTHENTICATED
+    }
+
+
+
+    //TODO: different viewModel
+    val authenticationState = FirebaseUserLiveData().map { user ->
+        if (user != null) {
+            AuthState.AUTHENTICATED
+        } else {
+            AuthState.UNAUTHENTICATED
+        }
+    }
 
 
     init {
