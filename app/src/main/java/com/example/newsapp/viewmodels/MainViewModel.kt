@@ -11,13 +11,13 @@ import com.example.newsapp.auth.FirebaseUserLiveData
 import com.example.newsapp.databases.getDatabase
 import com.example.newsapp.models.Article
 import com.example.newsapp.models.News
-import com.example.newsapp.network.NewsApi
 import com.example.newsapp.repositories.NewsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.util.*
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,10 +26,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     // the Coroutine runs using the Main (UI) dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
-//    private val database = getDatabase(application)
-//    private val newsRepo = NewsRepository(database)
-
 
     private val _articles = MutableLiveData<List<Article>>()
     //expose articles
@@ -56,7 +52,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         get() = _stateLiveData
 
 
-
     //repository
     private val newsRepo = NewsRepository(
         getDatabase(
@@ -69,7 +64,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     enum class AuthState {
         AUTHENTICATED, UNAUTHENTICATED
     }
-
 
 
     //TODO: different viewModel
@@ -89,8 +83,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 //        coroutineScope.launch {
 //            newsRepo.refreshNews()
 //        }
-//    getNewsFromApi()
-//    refreshFromNetwork()
     }
 
 
@@ -134,36 +126,34 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun getNewsFromApi() {
-        Log.i("MainViewModel", "created")
-        coroutineScope.launch {
-            val getNewsDefered =
-                NewsApi.retrofitService.getNews("us", "934de238d46c4c0c88825b1c653a56d8")
-            try {
-                val listResult = getNewsDefered.await()
-                Log.i("MainViewModel", "$listResult")
-            } catch (e: Exception) {
-                Log.i("MainViewModel", "$e")
+    fun onSearchButtonClicked(countryName: String) {
+        val countryCode = getCountryCodeFromCountryName(countryName.toLowerCase().capitalize())
+        countryCode?.let {
+            coroutineScope.launch {
+                val resultState = newsRepo.insertToDatabase(countryCode)
+                _stateLiveData.value = resultState
+                Log.i("MainViewModel", "inside onSearchButtonClicked ${news.value}")
+
             }
         }
     }
 
-//    fun onSearchButtonClicked(input: String) {
-//        coroutineScope.launch {
-//   newsRepo.refreshNews1(input)
-//            Log.i("MainViewModel", "inside onSearchButtonClicked ${news.value}")
-//
-//        }
-//    }
-
-    fun onSearchButtonClicked(input: String) {
-        coroutineScope.launch {
-            val resultState=  newsRepo.insertToDatabase(input)
-            _stateLiveData.value = resultState
-            Log.i("MainViewModel", "inside onSearchButtonClicked ${news.value}")
-
+    //convert to country code
+    private fun getCountryCodeFromCountryName(countryName: String): String? {
+        val countryCode = Locale.getISOCountries().find {
+            Locale("", it).displayCountry == countryName
         }
+        if (countryCode == null) {
+            _stateLiveData.value =
+                ResultState.Failure("We coudn't found any coutnry that match your input")
+            return countryCode
+        }
+        Log.i("MainViewModel", "else $countryCode")
+        return countryCode
+
+
     }
+
 
     //clear job and cancel coroutine
     override fun onCleared() {

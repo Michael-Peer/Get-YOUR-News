@@ -65,7 +65,6 @@ class MainFragment : Fragment() {
             it?.let {
                 viewModel.extractData(it)
             }
-
         })
 
         search_button.setOnClickListener {
