@@ -112,17 +112,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     //extract data from main model
     fun extractData(news: News) {
-//         Log.i("MainViewModel", "inside extractData function")
-//         Log.i("MainViewModel", "----------------------------")
-//         Log.i("MainViewModel", "$news")
         _totalResults.value = news.totalResults
         _articles.value = news.articles
-//         Log.i("MainViewModel", "----------------------------")
-//         Log.i("MainViewModel", "totalResults: $_totalResults")
-//         Log.i("MainViewModel", "----------------------------")
-//         Log.i("MainViewModel", "articles: $_articles")
-
-
     }
 
 
@@ -134,6 +125,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 _stateLiveData.value = resultState
                 Log.i("MainViewModel", "inside onSearchButtonClicked ${news.value}")
 
+            }
+        }
+    }
+
+    //TODO: DataPickerDialog, sortBy by userChoice
+    fun onQueryButtonClicked(query: String) {
+        Log.i("MainViewModel", "inside onQueryButtonClicked $query")
+        query?.let {
+            coroutineScope.launch {
+                val resultStateFromQuerySearch =
+                    newsRepo.insertToDatabaseByQuery(query, "2020-05-04", "popularity")
+                _stateLiveData.value = resultStateFromQuerySearch
             }
         }
     }

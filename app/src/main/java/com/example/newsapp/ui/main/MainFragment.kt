@@ -75,6 +75,14 @@ class MainFragment : Fragment() {
                 viewModel.onSearchButtonClicked(search_input.text.toString())
         }
 
+        free_query_searh_button.setOnClickListener {
+            Log.i("MainFragment", "query button clicked")
+            if (free_query_edit_text.text.isNullOrEmpty())
+                Toast.makeText(activity, "Input Error", Toast.LENGTH_LONG).show()
+            else
+                viewModel.onQueryButtonClicked(free_query_edit_text.text.toString())
+        }
+
         viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ResultState.Success -> { /* show success in UI */

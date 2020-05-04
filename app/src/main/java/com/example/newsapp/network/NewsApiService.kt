@@ -26,11 +26,21 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface NewsApiService {
+    //by country
     @GET("v2/top-headlines")
     fun getNews(
         @Query("country") country: String,
         @Query("apiKey") apiKey: String //TODO: Store const key and send
         ): Deferred<News>
+
+    //by query
+    @GET("v2/top-headlines")
+    fun  getNewsByQuery(
+        @Query("q") query: String,
+        @Query("from") date: String = "2020-05-04",
+        @Query("sortBy") sortBy: String ="popularity",
+        @Query("apiKey") apiKey: String //TODO: Store const key and send
+    ): Deferred<News>
 }
 
 //only one instance

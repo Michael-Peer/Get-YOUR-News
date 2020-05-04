@@ -50,6 +50,23 @@ class NewsRepository(private val database: NewsDatabase) {
         }
     }
 
+    suspend fun insertToDatabaseByQuery(query: String, date: String, sortBy: String): ResultState {
+        return withContext<ResultState>(Dispatchers.IO) {
+            val dataList =
+                NewsApi.retrofitService.getNewsByQuery(
+                    query,
+                    date,
+                    sortBy,
+                    "934de238d46c4c0c88825b1c653a56d8"
+                ).await()
+            if (dataList.totalResults < 1) {
+                return@withContext ResultState.Failure("We could't find any data, please correct your input")
+            } else {
+                database.news.insertAll(dataList)
+                return@withContext ResultState.Success
+            }
+        }
+    }
 
 
 }
