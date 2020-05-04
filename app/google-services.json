@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "524544900740",
+    "firebase_url": "https://news-app-3fc85.firebaseio.com",
+    "project_id": "news-app-3fc85",
+    "storage_bucket": "news-app-3fc85.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524544900740:android:9a80a4f9eec8ce308b4cd1",
+        "android_client_info": {
+          "package_name": "com.example.newsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "524544900740-jqi1keum3c5mbmu82r8v20qtpqssdfkt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.newsapp",
+            "certificate_hash": "5e323506281da970a54b92b3d92187b6fccbaea9"
+          }
+        },
+        {
+          "client_id": "524544900740-lc2m99nfa0l67gurob76341j12br1g2q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7MJ1Mm2nyXBa21ZHXsGgfYFYhuRptopw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "524544900740-lc2m99nfa0l67gurob76341j12br1g2q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
