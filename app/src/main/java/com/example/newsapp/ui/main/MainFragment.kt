@@ -1,18 +1,21 @@
 package com.example.newsapp.ui.main
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.newsapp.R
 import com.example.newsapp.Utils.ResultState
+import com.example.newsapp.ui.main.dialogs.DatePickerFragmentDialog
 import com.example.newsapp.viewmodels.Factory
 import com.example.newsapp.viewmodels.MainViewModel
 import com.firebase.ui.auth.AuthUI
@@ -20,7 +23,7 @@ import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.main_fragment.*
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     companion object {
         fun newInstance() = MainFragment()
@@ -83,6 +86,11 @@ class MainFragment : Fragment() {
                 viewModel.onQueryButtonClicked(free_query_edit_text.text.toString())
         }
 
+        //Date picker
+        date_picker_button.setOnClickListener {
+            openDatePickerDialog()
+        }
+
         viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ResultState.Success -> { /* show success in UI */
@@ -117,6 +125,13 @@ class MainFragment : Fragment() {
             ).show() //TODO: notify user
 
         })
+    }
+
+
+    //launch dialog
+    private fun openDatePickerDialog() {
+
+        DatePickerFragmentDialog().show(childFragmentManager, "datePicker" )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -179,6 +194,13 @@ class MainFragment : Fragment() {
                 }
             }
         })
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        Log.i("DatePickerFragment", year.toString())
+        Log.i("DatePickerFragment", month.toString())
+        Log.i("DatePickerFragment", dayOfMonth.toString())
+
     }
 
 }
