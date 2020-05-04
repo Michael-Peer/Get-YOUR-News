@@ -37,7 +37,7 @@ interface NewsApiService {
     @GET("v2/top-headlines")
     fun  getNewsByQuery(
         @Query("q") query: String,
-        @Query("from") date: String = "2020-05-04",
+        @Query("from") date: String = "2020-05-04", //TODO: calculate by minus week from current day for deafult
         @Query("sortBy") sortBy: String ="popularity",
         @Query("apiKey") apiKey: String //TODO: Store const key and send
     ): Deferred<News>
