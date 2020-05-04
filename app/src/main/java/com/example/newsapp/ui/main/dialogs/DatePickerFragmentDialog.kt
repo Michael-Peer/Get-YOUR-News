@@ -25,6 +25,7 @@ class DatePickerFragmentDialog : DialogFragment() {
 
         datePicker.maxDate = calendar.timeInMillis
 
+
         datePicker.minDate = oneMonthAgo.timeInMillis
 
         // Create a new instance of DatePickerDialog and return it
