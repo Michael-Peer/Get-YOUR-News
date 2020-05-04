@@ -1,5 +1,5 @@
 # Get-YOUR-News
 
-## Development in progress - See wireframe below
+## Development in progress - See wireframe below and check the code
 
-![ללא שם](https://user-images.githubusercontent.com/44434337/80909158-dd5b9480-8d2e-11ea-973f-3638641f4713.png)
+![ללא שם](https://user-images.githubusercontent.com/44434337/80923560-39550600-8d8d-11ea-8be4-b2cb1c1423bb.png)
