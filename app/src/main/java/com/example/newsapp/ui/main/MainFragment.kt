@@ -47,6 +47,8 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         savedInstanceState: Bundle?
     ): View {
 
+        selectedSortBy =  resources.getStringArray(R.array.sort_by_array)[0]
+
         viewModel = ViewModelProvider(this, Factory(requireActivity().application)).get(
             MainViewModel::class.java
         )
@@ -246,7 +248,6 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
     //date click
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        //currently there is a bug in google system - may represent as 4th month
         Log.i("DatePickerFragmentYear", year.toString())
         Log.i("DatePickerFragmentMonth", month.toString())
         Log.i("DatePickerFragmentDay", dayOfMonth.toString())

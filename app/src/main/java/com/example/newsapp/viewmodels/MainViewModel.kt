@@ -131,6 +131,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     //TODO: DataPickerDialog, sortBy by userChoice
     fun onQueryButtonClicked(query: String, date: String, sortBy: String) {
+        Log.i("onQueryButtonClicked", sortBy)
 
         query?.let {
             coroutineScope.launch {
