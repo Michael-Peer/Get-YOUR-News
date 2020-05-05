@@ -99,6 +99,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.4.0'
 
 
+    //TODO: REMOVE WHEN UPDATING TO ANDROID STUDIO 4.0
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
+
+
+
 
 }
 

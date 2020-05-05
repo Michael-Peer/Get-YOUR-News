@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -22,8 +24,11 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.main_fragment.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 
-class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener {
+class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
+    AdapterView.OnItemSelectedListener {
 
     companion object {
         fun newInstance() = MainFragment()
@@ -31,6 +36,11 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     }
 
     private lateinit var viewModel: MainViewModel
+    //can't be null
+    private lateinit var selectedSortBy: String
+    //could be null
+    private var selectedDate: String? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,20 +68,30 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         super.onViewCreated(view, savedInstanceState)
 
 
-        //login flow
-        login_button.setOnClickListener { launchLoginFlow() }
+        /**
+         * Initialize spinner
+         */
+        val spinner = sort_by_spinner
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sort_by_array,
+            android.R.layout.simple_spinner_item
+        ).also {
+            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = it
+        }
 
+        /**
+         * login flow
+         */
+        login_button.setOnClickListener { launchLoginFlow() }
         observeAuthState()
 
-
-        viewModel.news.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                viewModel.extractData(it)
-            }
-        })
-
+        /**
+         * Set Click Listeners
+         */
         search_button.setOnClickListener {
-            Log.i("MainFragment", "Search button clicked")
+//            Log.i("MainFragment", "Search button clicked")
             if (search_input.text.isNullOrEmpty())
                 Toast.makeText(activity, "Input Error", Toast.LENGTH_LONG).show()
             else
@@ -79,17 +99,30 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         }
 
         free_query_searh_button.setOnClickListener {
-            Log.i("MainFragment", "query button clicked")
-            if (free_query_edit_text.text.isNullOrEmpty())
+//            Log.i("MainFragment", "query button clicked")
+            if (free_query_edit_text.text.isNullOrEmpty() && selectedDate == null) {
+                Toast.makeText(activity, "Insert search input and pick a date", Toast.LENGTH_LONG)
+                    .show()
+            } else if (free_query_edit_text.text.isNullOrEmpty())
                 Toast.makeText(activity, "Input Error", Toast.LENGTH_LONG).show()
-            else
-                viewModel.onQueryButtonClicked(free_query_edit_text.text.toString())
+            else if (selectedDate == null) {
+                Toast.makeText(activity, "Pick a Date", Toast.LENGTH_LONG).show()
+            } else
+                viewModel.onQueryButtonClicked(
+                    free_query_edit_text.text.toString(),
+                    selectedDate!!,
+                    selectedSortBy
+                )
         }
 
         //Date picker
         date_picker_button.setOnClickListener {
             openDatePickerDialog()
         }
+
+        /**
+         * Set  Observers
+         */
 
         viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -102,15 +135,22 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         })
 
 
+        viewModel.news.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                viewModel.extractData(it)
+            }
+        })
+
+
 
         viewModel.totalResults.observe(viewLifecycleOwner, Observer {
-            Log.i("MainFragment", "Observe total results: $it")
-            Log.i("MainFragment", "----------------------------")
+//            Log.i("MainFragment", "Observe total results: $it")
+//            Log.i("MainFragment", "----------------------------")
         })
 
         viewModel.articles.observe(viewLifecycleOwner, Observer {
-            Log.i("MainFragment", "Observe articles: $it")
-            Log.i("MainFragment", "----------------------------")
+//            Log.i("MainFragment", "Observe articles: $it")
+//            Log.i("MainFragment", "----------------------------")
         })
 
 //        viewModel.networkError.observe(viewLifecycleOwner, Observer {
@@ -131,16 +171,19 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     //launch dialog
     private fun openDatePickerDialog() {
 
-        DatePickerFragmentDialog().show(childFragmentManager, "datePicker" )
+        DatePickerFragmentDialog().show(childFragmentManager, "datePicker")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == SIGN_IN_CODE){
+        if (requestCode == SIGN_IN_CODE) {
             val response = IdpResponse.fromResultIntent(data)
-            if (resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 //success
-                Log.i("MainFragment", "user success ${FirebaseAuth.getInstance().currentUser?.displayName}")
+                Log.i(
+                    "MainFragment",
+                    "user success ${FirebaseAuth.getInstance().currentUser?.displayName}"
+                )
             } else {
                 //failed
                 Log.i("MainFragment", "user failed ${response?.error?.errorCode}")
@@ -176,7 +219,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     private fun observeAuthState() {
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 MainViewModel.AuthState.AUTHENTICATED -> {
                     login_button.text = "Logout"
 
@@ -196,10 +239,42 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         })
     }
 
+
+    /**
+     * Implement Interfaces
+     */
+
+    //date click
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        Log.i("DatePickerFragment", year.toString())
-        Log.i("DatePickerFragment", month.toString())
-        Log.i("DatePickerFragment", dayOfMonth.toString())
+        //currently there is a bug in google system - may represent as 4th month
+        Log.i("DatePickerFragmentYear", year.toString())
+        Log.i("DatePickerFragmentMonth", month.toString())
+        Log.i("DatePickerFragmentDay", dayOfMonth.toString())
+
+        //TODO: REMOVE threeten imports WHEN UPDATING TO ANDROID STUDIO 4.0
+        val date = LocalDate.of(year, month + 1, dayOfMonth)
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val formattedDate = date.format(formatter)
+        selectedDate = formattedDate.toString()
+
+        Log.i("DatePickerFragment", formattedDate.toString())
+
+    }
+
+
+    //spinner click
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        Log.i("MainFragment","onNothingSelected")
+        val sortByArray: Array<String> = resources.getStringArray(R.array.sort_by_array)
+        selectedSortBy = sortByArray[0]
+        Log.i("MainFragment",selectedSortBy)
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        Log.i("MainFragment","onItemSelected")
+        val sortByArray: Array<String> = resources.getStringArray(R.array.sort_by_array)
+        selectedSortBy = sortByArray[position]
+        Log.i("MainFragment",selectedSortBy)
 
     }
 
