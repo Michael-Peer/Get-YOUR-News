@@ -47,7 +47,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         savedInstanceState: Bundle?
     ): View {
 
-        selectedSortBy =  resources.getStringArray(R.array.sort_by_array)[0]
+//        selectedSortBy =  resources.getStringArray(R.array.sort_by_array)[0]
 
         viewModel = ViewModelProvider(this, Factory(requireActivity().application)).get(
             MainViewModel::class.java
@@ -74,6 +74,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
          * Initialize spinner
          */
         val spinner = sort_by_spinner
+        spinner.onItemSelectedListener = this
         ArrayAdapter.createFromResource(
             requireContext(),
             R.array.sort_by_array,
@@ -82,6 +83,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
             it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = it
         }
+
 
         /**
          * login flow
@@ -146,13 +148,13 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
 
         viewModel.totalResults.observe(viewLifecycleOwner, Observer {
-//            Log.i("MainFragment", "Observe total results: $it")
-//            Log.i("MainFragment", "----------------------------")
+            Log.i("MainFragment", "Observe total results: $it")
+            Log.i("MainFragment", "----------------------------")
         })
 
         viewModel.articles.observe(viewLifecycleOwner, Observer {
-//            Log.i("MainFragment", "Observe articles: $it")
-//            Log.i("MainFragment", "----------------------------")
+            Log.i("MainFragment", "Observe articles: $it")
+            Log.i("MainFragment", "----------------------------")
         })
 
 //        viewModel.networkError.observe(viewLifecycleOwner, Observer {
@@ -265,18 +267,13 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
     //spinner click
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        Log.i("MainFragment","onNothingSelected")
-        val sortByArray: Array<String> = resources.getStringArray(R.array.sort_by_array)
-        selectedSortBy = sortByArray[0]
-        Log.i("MainFragment",selectedSortBy)
+
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        Log.i("MainFragment","onItemSelected")
-        val sortByArray: Array<String> = resources.getStringArray(R.array.sort_by_array)
-        selectedSortBy = sortByArray[position]
-        Log.i("MainFragment",selectedSortBy)
+//        Log.i("onItemSelected", "${parent!!.getItemAtPosition(position)}")
+        selectedSortBy = parent!!.getItemAtPosition(position).toString()
+        Log.i("onItemSelected", selectedSortBy)
 
     }
-
 }

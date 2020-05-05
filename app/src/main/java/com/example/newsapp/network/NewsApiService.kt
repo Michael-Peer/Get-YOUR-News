@@ -34,7 +34,7 @@ interface NewsApiService {
         ): Deferred<News>
 
     //by query
-    @GET("v2/top-headlines")
+    @GET("v2/everything")//TODO: PAGING! 30 ARTICLES PER REQ
     fun  getNewsByQuery(
         @Query("q") query: String,
         @Query("from") date: String = "2020-05-04", //TODO: calculate by minus week from current day for deafult

@@ -51,6 +51,9 @@ class NewsRepository(private val database: NewsDatabase) {
     }
 
     suspend fun insertToDatabaseByQuery(query: String, date: String, sortBy: String): ResultState {
+        Log.i("insertToDatabaseByQuery", query)
+        Log.i("insertToDatabaseByQuery", date)
+        Log.i("insertToDatabaseByQuery", sortBy)
         return withContext<ResultState>(Dispatchers.IO) {
             val dataList =
                 NewsApi.retrofitService.getNewsByQuery(
