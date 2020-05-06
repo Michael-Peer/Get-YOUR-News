@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import com.example.newsapp.R
 import com.example.newsapp.Utils.ResultState
 import com.example.newsapp.ui.main.dialogs.DatePickerFragmentDialog
@@ -48,10 +49,11 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     ): View {
 
 //        selectedSortBy =  resources.getStringArray(R.array.sort_by_array)[0]
+        val storeOwner = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).getViewModelStoreOwner(R.id.nested_navigation)
 
-        viewModel = ViewModelProvider(this, Factory(requireActivity().application)).get(
-            MainViewModel::class.java
-        )
+
+        viewModel =  ViewModelProvider(storeOwner, Factory(requireActivity().application)).get(MainViewModel::class.java)
+
 
 
 
@@ -95,7 +97,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
          * Set Click Listeners
          */
         search_button.setOnClickListener {
-//            Log.i("MainFragment", "Search button clicked")
+            //            Log.i("MainFragment", "Search button clicked")
             if (search_input.text.isNullOrEmpty())
                 Toast.makeText(activity, "Input Error", Toast.LENGTH_LONG).show()
             else
@@ -103,7 +105,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         }
 
         free_query_searh_button.setOnClickListener {
-//            Log.i("MainFragment", "query button clicked")
+            //            Log.i("MainFragment", "query button clicked")
             if (free_query_edit_text.text.isNullOrEmpty() && selectedDate == null) {
                 Toast.makeText(activity, "Insert search input and pick a date", Toast.LENGTH_LONG)
                     .show()
@@ -249,6 +251,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
      */
 
     //date click
+    //TODO: CONSIDER ADD "TO" TOO
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         Log.i("DatePickerFragmentYear", year.toString())
         Log.i("DatePickerFragmentMonth", month.toString())

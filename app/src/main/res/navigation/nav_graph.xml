@@ -2,21 +2,25 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/nested_navigation">
 
-    <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.example.newsapp.ui.main.MainFragment"
-        android:label="main_fragment"
-        tools:layout="@layout/main_fragment" />
     <fragment
         android:id="@+id/settings"
         android:name="com.example.newsapp.ui.main.Settings"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
-    <fragment
-        android:id="@+id/newsList"
-        android:name="com.example.newsapp.ui.main.NewsList"
-        android:label="fragment_news_list"
-        tools:layout="@layout/fragment_news_list" />
+    <navigation
+        android:id="@+id/nested_navigation"
+        app:startDestination="@id/mainFragment" >
+        <fragment
+            android:id="@+id/mainFragment"
+            android:name="com.example.newsapp.ui.main.MainFragment"
+            android:label="main_fragment"
+            tools:layout="@layout/main_fragment" />
+        <fragment
+            android:id="@+id/newsList"
+            android:name="com.example.newsapp.ui.main.NewsList"
+            android:label="fragment_news_list"
+            tools:layout="@layout/fragment_news_list" />
+    </navigation>
 </navigation>

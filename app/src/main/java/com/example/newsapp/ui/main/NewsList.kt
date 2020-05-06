@@ -8,16 +8,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import com.example.newsapp.R
-import com.example.newsapp.viewmodels.NewsListViewModel
-import com.example.newsapp.viewmodels.NewsListViewModelFactory
+import com.example.newsapp.viewmodels.Factory
+import com.example.newsapp.viewmodels.MainViewModel
 
 /**
  * A simple [Fragment] subclass.
  */
 class NewsList : Fragment() {
 
-    private lateinit var viewModel: NewsListViewModel
+    private lateinit var viewModel: MainViewModel
 
 
     override fun onCreateView(
@@ -25,9 +26,11 @@ class NewsList : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        viewModel = ViewModelProvider(this, NewsListViewModelFactory(requireActivity().application)).get(
-            NewsListViewModel::class.java
-        )
+        val storeOwner = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).getViewModelStoreOwner(R.id.nested_navigation)
+
+
+        viewModel =  ViewModelProvider(storeOwner, Factory(requireActivity().application)).get(
+            MainViewModel::class.java)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_news_list, container, false)
     }
