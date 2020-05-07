@@ -17,7 +17,7 @@ data class Article(
 //    @TypeConverters(MyTypeConvertors::class)
     val source: Source? = null,
     @SerializedName("title")
-    val title: String? = null,
+    val title: String? = "Title unavailable",
     @SerializedName("url")
     val url: String? = null,
     @SerializedName("urlToImage")
