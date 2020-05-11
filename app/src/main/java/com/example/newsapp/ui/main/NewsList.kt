@@ -2,13 +2,15 @@ package com.example.newsapp.ui.main
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.R
 import com.example.newsapp.adapters.NewsListAdapter
@@ -35,6 +37,8 @@ class NewsList : Fragment(), OnArticleListener {
         viewModel = ViewModelProvider(storeOwner, Factory(requireActivity().application)).get(
             MainViewModel::class.java
         )
+        setHasOptionsMenu(true)
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_news_list, container, false)
     }
@@ -51,17 +55,24 @@ class NewsList : Fragment(), OnArticleListener {
                 //TODO: inflate all items
                 adapter.submitList(it) //ListAdapter function
             }
-
-
         })
     }
 
     override fun onArticleClick(position: Int) {
         Log.i("click","$position clicked")
-//        folding_cell.setOnClickListener {
-//            folding_cell.toggle(false)
-//        }
+        requireView().findNavController().navigate(
+            NewsListDirections.actionNewsToSingleNews(
+                viewModel.articles.value!![position]
+            )
+        )
 
+
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.dots_menu, menu)
     }
 
 }

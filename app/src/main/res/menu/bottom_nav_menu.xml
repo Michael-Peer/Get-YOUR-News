@@ -5,18 +5,19 @@
         android:id="@+id/mainFragment"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/home"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/newsList"
         android:icon="@drawable/ic_format_list_bulleted_black_24dp"
         android:title="@string/news_list"
         app:showAsAction="ifRoom"
         />
+
+
     <item
-        android:id="@+id/settings"
+        android:id="@+id/favorites"
         android:icon="@drawable/ic_settings_black_24dp"
-        android:title="@string/settings"
+        android:title="Favorites"
         app:showAsAction="ifRoom"
         />
 </menu>

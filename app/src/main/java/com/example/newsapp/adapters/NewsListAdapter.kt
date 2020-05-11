@@ -4,10 +4,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.R
 import com.example.newsapp.models.Article
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.news_list_item.view.*
 
 
@@ -48,7 +50,7 @@ class NewsListAdapter(private val articleListener: OnArticleListener) :
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 //        private val itemText: TextView = itemView.cell_content_view_text
 //        private val titleText: TextView = itemView.title_text
-//        private val authorText: TextView = itemView.author_text
+        private val titleText: TextView = itemView.title_text
 //        private val foldingCell = itemView.folding_cell
         private val  imageTitle = itemView.title_image
 
@@ -61,14 +63,14 @@ class NewsListAdapter(private val articleListener: OnArticleListener) :
         fun bind(article: Article) {
 //            itemText.text = article.content.toString()
 //            titleText.text = article.title
-//            authorText.text = article.author
+            titleText.text = article.title
 
-//            Picasso.get()
-//                .load(article.urlToImage)
-//                .placeholder(R.drawable.ic_launcher_background)
-//                .fit()
-//                .centerInside()
-//                .into(imageTitle)
+            Picasso.get()
+                .load(article.urlToImage)
+                .placeholder(R.drawable.ic_launcher_background)
+                .fit()
+                .centerCrop()
+                .into(imageTitle)
         }
 
         companion object {

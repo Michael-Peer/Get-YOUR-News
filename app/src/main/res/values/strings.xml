@@ -8,6 +8,10 @@
     <string name="settings">Settings</string>
     <string name="news_list">News List</string>
     <string name="title_image">title image</string>
+    <string name="search_your_news">Search your news</string>
+    <string name="top">Top</string>
+    <string name="all">All</string>
+    <string name="search_by_country">Search by country</string>
 
     //sortBy
     <string-array name="sort_by_array">

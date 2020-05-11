@@ -5,9 +5,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
@@ -16,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.example.newsapp.R
 import com.example.newsapp.Utils.ResultState
 import com.example.newsapp.ui.main.dialogs.DatePickerFragmentDialog
@@ -25,6 +24,16 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.main_fragment.*
+import kotlinx.android.synthetic.main.main_fragment.date_picker_button
+import kotlinx.android.synthetic.main.main_fragment.folding_cell
+import kotlinx.android.synthetic.main.main_fragment.free_query_edit_text
+import kotlinx.android.synthetic.main.main_fragment.free_query_searh_button
+//import kotlinx.android.synthetic.main.main_fragment.imageView3
+//import kotlinx.android.synthetic.main.main_fragment.login_button
+import kotlinx.android.synthetic.main.main_fragment.search_button
+import kotlinx.android.synthetic.main.main_fragment.search_input
+import kotlinx.android.synthetic.main.main_fragment.sort_by_spinner
+import kotlinx.android.synthetic.main.sample_layout.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -55,7 +64,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         viewModel =  ViewModelProvider(storeOwner, Factory(requireActivity().application)).get(MainViewModel::class.java)
 
 
-
+        setHasOptionsMenu(true)
 
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
@@ -71,6 +80,22 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+//        //sample
+//        network_button.setOnClickListener {
+//            it.findNavController().navigate(
+//                R.id.sampleFragment
+//            )
+//        }
+
+        folding_cell.setOnClickListener {
+            folding_cell.toggle(false)
+//            if (imageView3.visibility == View.VISIBLE)
+//                imageView3.visibility = View.GONE
+//            else
+//                imageView3.visibility = View.VISIBLE
+
+        }
 
         /**
          * Initialize spinner
@@ -90,8 +115,8 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         /**
          * login flow
          */
-        login_button.setOnClickListener { launchLoginFlow() }
-        observeAuthState()
+//        login_button.setOnClickListener { launchLoginFlow() }
+//        observeAuthState()
 
         /**
          * Set Click Listeners
@@ -278,5 +303,10 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         selectedSortBy = parent!!.getItemAtPosition(position).toString()
         Log.i("onItemSelected", selectedSortBy)
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.dots_menu, menu)
     }
 }
