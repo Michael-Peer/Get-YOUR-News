@@ -13,6 +13,6 @@ When the app launches, we call ```refreshNews``` from the ```Repository``` throu
 From the second time on, we *DO NOT* need internt connection to intercat with the app - When the user launch the app, he gets all the data directly from the local database, and in the meantime, we trying to make network requrst to refrsh the data in the local database
 
 
-*Work in the background:* There is a worker that run in the background even if the app is clodes, and this worker is responsible to making network requests in order to give the user the freshest data when he launch the app, and in order to "keep" the user phone and money, the worker runs only when the phone is charging *AND* on wifi
+**Work in the background:** There is a worker that run in the background even if the app is clodes, and this worker is responsible to making network requests in order to give the user the freshest data when he launch the app, and in order to "keep" the user phone and money, the worker runs only when the phone is charging *AND* on wifi
 
 Currently the worker is well..working. But I will add the possilbity to the user to highly customize the settings of when and where the worker should run.
