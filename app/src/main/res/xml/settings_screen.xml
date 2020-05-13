@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreferenceCompat
+        app:icon="@drawable/ic_invert_colors_black_24dp"
         app:key="uiMode"
         app:title="Enable Dark Model" />
+
+    <SwitchPreferenceCompat
+        app:key="wifi"
+        app:title="Refresh only on wifi"
+        app:defaultValue="true"
+        app:summary="If enabled, the background refresh will work only when you are on wifi"
+        app:icon="@drawable/ic_wifi_black_24dp"
+        />
+
+    <SwitchPreferenceCompat
+        app:key="charge"
+        app:defaultValue="true"
+        app:title="Refresh only when charging"
+        app:summary="If enabled, the background refresh will work only when your fun is charging"
+        app:icon="@drawable/ic_battery_charging_90_black_24dp"
+        />
+
+    <SeekBarPreference
+        app:key="minutes"
+        app:title="How often refresh the data"
+        app:summary="By minutes"
+        app:defaultValue="30"
+        app:min="15"
+        android:max="1000"
+        app:showSeekBarValue="true"
+        />
+
 
 </PreferenceScreen>

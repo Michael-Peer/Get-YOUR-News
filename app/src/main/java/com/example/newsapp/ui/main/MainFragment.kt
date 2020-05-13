@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.preference.Preference
+import androidx.preference.PreferenceManager
 import com.example.newsapp.R
 import com.example.newsapp.Utils.ResultState
 import com.example.newsapp.ui.main.dialogs.DatePickerFragmentDialog
@@ -78,6 +80,10 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val dark = sharedPreferences.getBoolean("uiMode", false)
+        Log.i("sharedPreferences", "$dark")
 
 
 //        //sample
