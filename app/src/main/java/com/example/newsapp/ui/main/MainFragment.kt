@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import com.example.newsapp.R
 import com.example.newsapp.Utils.ResultState
 import com.example.newsapp.ui.main.dialogs.DatePickerFragmentDialog
@@ -23,13 +22,11 @@ import com.example.newsapp.viewmodels.MainViewModel
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.main_fragment.*
-import kotlinx.android.synthetic.main.main_fragment.date_picker_button
+import kotlinx.android.synthetic.main.main_fragment.date_picker_start_button
 import kotlinx.android.synthetic.main.main_fragment.folding_cell
 import kotlinx.android.synthetic.main.main_fragment.free_query_edit_text
 import kotlinx.android.synthetic.main.main_fragment.free_query_searh_button
-//import kotlinx.android.synthetic.main.main_fragment.imageView3
-//import kotlinx.android.synthetic.main.main_fragment.login_button
+
 import kotlinx.android.synthetic.main.main_fragment.search_button
 import kotlinx.android.synthetic.main.main_fragment.search_input
 import kotlinx.android.synthetic.main.main_fragment.sort_by_spinner
@@ -49,7 +46,9 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     //can't be null
     private lateinit var selectedSortBy: String
     //could be null
-    private var selectedDate: String? = null
+    private var selectedStartDate: String? = null
+    private var selectedEndDate: String? = null
+
 
 
     override fun onCreateView(
@@ -131,23 +130,27 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
         free_query_searh_button.setOnClickListener {
             //            Log.i("MainFragment", "query button clicked")
-            if (free_query_edit_text.text.isNullOrEmpty() && selectedDate == null) {
+            if (free_query_edit_text.text.isNullOrEmpty() && selectedStartDate == null) {
                 Toast.makeText(activity, "Insert search input and pick a date", Toast.LENGTH_LONG)
                     .show()
             } else if (free_query_edit_text.text.isNullOrEmpty())
                 Toast.makeText(activity, "Input Error", Toast.LENGTH_LONG).show()
-            else if (selectedDate == null) {
+            else if (selectedStartDate == null) {
                 Toast.makeText(activity, "Pick a Date", Toast.LENGTH_LONG).show()
             } else
                 viewModel.onQueryButtonClicked(
                     free_query_edit_text.text.toString(),
-                    selectedDate!!,
+                    selectedStartDate!!,
                     selectedSortBy
                 )
         }
 
         //Date picker
-        date_picker_button.setOnClickListener {
+        date_picker_start_button.setOnClickListener {
+            openDatePickerDialog()
+        }
+
+        date_picker_end_button.setOnClickListener {
             openDatePickerDialog()
         }
 
@@ -255,7 +258,6 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                     login_button.text = "Logout"
 
                     login_button.setOnClickListener {
-                        //TODO: implement logging out
                         AuthUI.getInstance().signOut(requireContext())
                     }
 
@@ -276,7 +278,6 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
      */
 
     //date click
-    //TODO: CONSIDER ADD "TO" TOO
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         Log.i("DatePickerFragmentYear", year.toString())
         Log.i("DatePickerFragmentMonth", month.toString())
@@ -286,7 +287,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         val date = LocalDate.of(year, month + 1, dayOfMonth)
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val formattedDate = date.format(formatter)
-        selectedDate = formattedDate.toString()
+        selectedStartDate = formattedDate.toString()
 
         Log.i("DatePickerFragment", formattedDate.toString())
 
