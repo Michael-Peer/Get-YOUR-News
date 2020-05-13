@@ -81,9 +81,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val dark = sharedPreferences.getBoolean("uiMode", false)
-        Log.i("sharedPreferences", "$dark")
+
 
 
 //        //sample
