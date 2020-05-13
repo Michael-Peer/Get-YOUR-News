@@ -42,7 +42,7 @@ class NewsApplication : Application() {
         Log.i("setupRecWork", "setupRecWork")
         //when work should run
         val constraints = Constraints.Builder()
-            .setRequiredNetworkType(if (!wifiRequired) NetworkType.METERED else NetworkType.CONNECTED)
+            .setRequiredNetworkType(if (wifiRequired) NetworkType.METERED else NetworkType.CONNECTED)
             .setRequiresBatteryNotLow(true)
             .setRequiresCharging(chargeRequired)
             .build()
