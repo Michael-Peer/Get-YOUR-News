@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit
 class NewsApplication : Application() {
 
 
-//    private val minutes = sharedPreferences.getBoolean("charge", true)
 
     private val appScope = CoroutineScope(Dispatchers.Default)
 
@@ -47,7 +46,7 @@ class NewsApplication : Application() {
             .setRequiresCharging(chargeRequired)
             .build()
 
-        val repeatedReq = PeriodicWorkRequestBuilder<RefreshWorker>(30, TimeUnit.MINUTES)
+        val repeatedReq = PeriodicWorkRequestBuilder<RefreshWorker>(minutes.toLong(), TimeUnit.MINUTES)
             .setConstraints(constraints)
             .build()
 
