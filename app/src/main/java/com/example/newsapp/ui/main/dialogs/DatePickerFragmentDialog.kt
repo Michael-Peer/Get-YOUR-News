@@ -57,7 +57,6 @@ class DatePickerFragmentDialog : DialogFragment() {
             oneMonthAgo.add(Calendar.DATE, -29)
         } else {
             //end date
-            Log.i("DatePickerFragmentDayOf", "selectedStartDate $selectedStartDate") //2020-05-05
 
             val dateList: ArrayList<Int> = extractDate(selectedStartDate)
 
