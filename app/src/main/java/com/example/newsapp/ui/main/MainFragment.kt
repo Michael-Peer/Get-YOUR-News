@@ -14,8 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.preference.Preference
-import androidx.preference.PreferenceManager
+
 import com.example.newsapp.R
 import com.example.newsapp.Utils.ResultState
 import com.example.newsapp.ui.main.dialogs.DatePickerFragmentDialog
@@ -45,12 +44,14 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     }
 
     private lateinit var viewModel: MainViewModel
+
     //can't be null
     private lateinit var selectedSortBy: String
+
     //could be null
     private var selectedStartDate: String? = null
     private var selectedEndDate: String? = null
-
+    private var isStart: Boolean = false
 
 
     override fun onCreateView(
@@ -59,10 +60,14 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     ): View {
 
 //        selectedSortBy =  resources.getStringArray(R.array.sort_by_array)[0]
-        val storeOwner = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).getViewModelStoreOwner(R.id.nested_navigation)
+        val storeOwner = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+            .getViewModelStoreOwner(R.id.nested_navigation)
 
 
-        viewModel =  ViewModelProvider(storeOwner, Factory(requireActivity().application)).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(
+            storeOwner,
+            Factory(requireActivity().application)
+        ).get(MainViewModel::class.java)
 
 
         setHasOptionsMenu(true)
@@ -80,8 +85,6 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
 
 //        //sample
@@ -151,11 +154,17 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
         //Date picker
         date_picker_start_button.setOnClickListener {
-            openDatePickerDialog()
+            isStart = true
+            openDatePickerDialog(isStart)
         }
 
         date_picker_end_button.setOnClickListener {
-            openDatePickerDialog()
+            isStart = false
+            if (selectedStartDate == null) {
+                Toast.makeText(activity, "Select start date", Toast.LENGTH_SHORT).show()
+            } else {
+                openDatePickerDialog(isStart, selectedStartDate)
+            }
         }
 
         /**
@@ -207,9 +216,11 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
 
     //launch dialog
-    private fun openDatePickerDialog() {
+    private fun openDatePickerDialog(isStart: Boolean, selectedStartDate: String? = null) {
 
-        DatePickerFragmentDialog().show(childFragmentManager, "datePicker")
+//        DatePickerFragmentDialog().show(childFragmentManager, "datePicker")
+        DatePickerFragmentDialog.newInstance(isStart, selectedStartDate)
+            .show(childFragmentManager, DatePickerFragmentDialog.TAG)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -283,17 +294,20 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
     //date click
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        Log.i("DatePickerFragmentYear", year.toString())
-        Log.i("DatePickerFragmentMonth", month.toString())
-        Log.i("DatePickerFragmentDay", dayOfMonth.toString())
-
         //TODO: REMOVE threeten imports WHEN UPDATING TO ANDROID STUDIO 4.0
         val date = LocalDate.of(year, month + 1, dayOfMonth)
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val formattedDate = date.format(formatter)
-        selectedStartDate = formattedDate.toString()
 
-        Log.i("DatePickerFragment", formattedDate.toString())
+        if (isStart) {
+            selectedStartDate = formattedDate.toString()
+        } else {
+            selectedEndDate = formattedDate.toString()
+        }
+
+        Log.i("DatePickerFragment", " Start $selectedStartDate")
+        Log.i("DatePickerFragment", " End $selectedEndDate")
+
 
     }
 
