@@ -12,12 +12,26 @@
     <string name="top">Top</string>
     <string name="all">All</string>
     <string name="search_by_country">Search by country</string>
+    <string name="everything">everything</string>
+    <string name="top_headlines">top-headlines</string>
+    <string name="logout">Logout</string>
+    <string name="login">Login</string>
 
     //sortBy
     <string-array name="sort_by_array">
         <item>popularity</item>
         <item>relevancy</item>
         <item>publishedAt</item>
+    </string-array>
+
+    <string-array name="category_array">
+        <item>general</item>
+        <item>business</item>
+        <item>entertainment</item>
+        <item>health</item>
+        <item>science</item>
+        <item>sports</item>
+        <item>technology</item>
     </string-array>
 
 </resources>

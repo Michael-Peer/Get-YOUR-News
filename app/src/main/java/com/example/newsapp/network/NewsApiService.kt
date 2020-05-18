@@ -35,10 +35,20 @@ interface NewsApiService {
 
     //by query
     @GET("v2/everything")//TODO: PAGING! 30 ARTICLES PER REQ
-    fun getNewsByQuery(
+    fun getNewsByQueryEverything(
         @Query("q") query: String,
         @Query("from") date: String = "2020-05-04", //TODO: calculate by minus week from current day for deafult
         @Query("sortBy") sortBy: String = "popularity",
+//        @Query("category") category: String? = "general",
+        @Query("apiKey") apiKey: String //TODO: Store const key and send
+    ): Deferred<News>
+
+    @GET("v2/top-headlines")//TODO: PAGING! 30 ARTICLES PER REQ
+    fun getNewsByQueryTop(
+        @Query("q") query: String,
+        @Query("from") date: String = "2020-05-04", //TODO: calculate by minus week from current day for deafult
+        @Query("sortBy") sortBy: String = "popularity",
+        @Query("category") category: String? = "general",
         @Query("apiKey") apiKey: String //TODO: Store const key and send
     ): Deferred<News>
 }

@@ -23,15 +23,18 @@ import com.example.newsapp.viewmodels.MainViewModel
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.main_fragment.*
 import kotlinx.android.synthetic.main.main_fragment.date_picker_start_button
 import kotlinx.android.synthetic.main.main_fragment.folding_cell
 import kotlinx.android.synthetic.main.main_fragment.free_query_edit_text
 import kotlinx.android.synthetic.main.main_fragment.free_query_searh_button
-
 import kotlinx.android.synthetic.main.main_fragment.search_button
 import kotlinx.android.synthetic.main.main_fragment.search_input
 import kotlinx.android.synthetic.main.main_fragment.sort_by_spinner
+
 import kotlinx.android.synthetic.main.sample_layout.*
+import kotlinx.android.synthetic.main.sample_layout.chipGroup
+import kotlinx.android.synthetic.main.sample_layout.date_picker_end_button
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -52,6 +55,8 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     private var selectedStartDate: String? = null
     private var selectedEndDate: String? = null
     private var isStart: Boolean = false
+    private var selectedCategory: String? = null
+    private var selectedSearchType: String? = null
 
 
     override fun onCreateView(
@@ -86,6 +91,12 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val categoryArray = resources.getStringArray(R.array.category_array)
+
+        for (catergory in categoryArray) {
+            Log.i("categoryArray", catergory)
+        }
+
 
 //        //sample
 //        network_button.setOnClickListener {
@@ -101,6 +112,42 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 //            else
 //                imageView3.visibility = View.VISIBLE
 
+        }
+
+
+        //top or all
+        materialButtonToggleGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.top -> {
+                        Log.i("button", "top clicked")
+                        selectedSearchType = getString(R.string.top_headlines)
+                    }
+                    R.id.all -> {
+                        Log.i("button", "all clicked")
+                        selectedSearchType = getString(R.string.everything)
+                    }
+                }
+            } else {
+                if (materialButtonToggleGroup.checkedButtonId == View.NO_ID) {
+                    selectedSearchType = getString(R.string.top_headlines)
+                }
+            }
+
+        }
+
+        //chip categories
+        chipGroup.setOnCheckedChangeListener { group, checkedId ->
+            //TODO: error when pick when get back from all news
+            if (checkedId != -1) {
+                selectedCategory = categoryArray[checkedId - 1]
+            } else {
+                selectedCategory = categoryArray[0]
+            }
+//            Log.i("chips", selectedCategory)
+//            Log.i("chips", group.toString())
+//            Log.i("chips", checkedId.toString())
+//            Log.i("chips", chipGroup.checkedChipId.toString())
         }
 
         /**
@@ -148,7 +195,9 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                 viewModel.onQueryButtonClicked(
                     free_query_edit_text.text.toString(),
                     selectedStartDate!!,
-                    selectedSortBy
+                    selectedSortBy,
+                    selectedSearchType,
+                    selectedCategory
                 )
         }
 
@@ -270,7 +319,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 MainViewModel.AuthState.AUTHENTICATED -> {
-                    login_button.text = "Logout"
+                    login_button.text = getString(R.string.logout)
 
                     login_button.setOnClickListener {
                         AuthUI.getInstance().signOut(requireContext())
@@ -280,12 +329,14 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                 }
                 else -> {
                     //if no logged in user
-                    login_button.text = "Login"
+                    login_button.text = getString(R.string.login)
                     login_button.setOnClickListener { launchLoginFlow() }
                 }
             }
         })
     }
+
+
 
 
     /**
@@ -329,3 +380,7 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         inflater.inflate(R.menu.dots_menu, menu)
     }
 }
+
+
+
+

@@ -130,16 +130,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     //TODO: DataPickerDialog, sortBy by userChoice
-    fun onQueryButtonClicked(query: String, date: String, sortBy: String) {
+    fun onQueryButtonClicked(query: String, date: String, sortBy: String, selectedSearchType: String? , selectedCategory: String?) {
         Log.i("onQueryButtonClicked", query)
         Log.i("onQueryButtonClicked", date)
         Log.i("onQueryButtonClicked", sortBy)
+        Log.i("onQueryButtonClicked", selectedSearchType)
 
 
         query?.let {
             coroutineScope.launch {
                 val resultStateFromQuerySearch =
-                    newsRepo.insertToDatabaseByQuery(query, date, sortBy)
+                    newsRepo.insertToDatabaseByQuery(query, date, sortBy, selectedSearchType, selectedCategory)
                 _stateLiveData.value = resultStateFromQuerySearch
             }
         }

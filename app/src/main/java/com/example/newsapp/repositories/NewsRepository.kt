@@ -2,6 +2,7 @@ package com.example.newsapp.repositories
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import com.example.newsapp.Utils.Constans
 import com.example.newsapp.Utils.ResultState
 import com.example.newsapp.databases.NewsDatabase
 import com.example.newsapp.models.News
@@ -50,18 +51,40 @@ class NewsRepository(private val database: NewsDatabase) {
         }
     }
 
-    suspend fun insertToDatabaseByQuery(query: String, date: String, sortBy: String): ResultState {
+    suspend fun insertToDatabaseByQuery(
+        query: String,
+        date: String,
+        sortBy: String,
+        selectedSearchType: String?,
+        selectedCategory: String?
+    ): ResultState {
         Log.i("insertToDatabaseByQuery", query)
         Log.i("insertToDatabaseByQuery", date)
         Log.i("insertToDatabaseByQuery", sortBy)
+        Log.i("insertToDatabaseByQuery", selectedSearchType)
+        Log.i("insertToDatabaseByQuery", "selected catergory $selectedCategory" )
+
+
         return withContext<ResultState>(Dispatchers.IO) {
             val dataList =
-                NewsApi.retrofitService.getNewsByQuery(
-                    query,
-                    date,
-                    sortBy,
-                    "934de238d46c4c0c88825b1c653a56d8"
-                ).await()
+                if (selectedSearchType == Constans.ALL_NEWS) {
+                    //TODO: No category in everything, notify user what to choose
+                    NewsApi.retrofitService.getNewsByQueryEverything(
+                        query,
+                        date,
+                        sortBy,
+//                        selectedCategory,
+                        Constans.API_KEY
+                    ).await()
+                } else {
+                    NewsApi.retrofitService.getNewsByQueryTop(
+                        query,
+                        date,
+                        sortBy,
+                        selectedCategory,
+                        Constans.API_KEY
+                    ).await()
+                }
             if (dataList.totalResults < 1) {
                 return@withContext ResultState.Failure("We could't find any data, please correct your input")
             } else {
