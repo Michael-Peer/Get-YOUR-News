@@ -22,6 +22,7 @@ import com.example.newsapp.viewmodels.Factory
 import com.example.newsapp.viewmodels.MainViewModel
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
+import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.main_fragment.*
 import kotlinx.android.synthetic.main.main_fragment.date_picker_start_button
@@ -83,14 +84,13 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         //        network_button.setOnClickListener {
-
-
 //        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //chip array - going to
         val categoryArray = resources.getStringArray(R.array.category_array)
 
         for (catergory in categoryArray) {
@@ -98,21 +98,15 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         }
 
 
-//        //sample
-//        network_button.setOnClickListener {
-//            it.findNavController().navigate(
-//                R.id.sampleFragment
-//            )
-//        }
 
+//toogle folding cell view
         folding_cell.setOnClickListener {
             folding_cell.toggle(false)
-//            if (imageView3.visibility == View.VISIBLE)
-//                imageView3.visibility = View.GONE
-//            else
-//                imageView3.visibility = View.VISIBLE
-
         }
+
+        //Initialize spinner
+        initSpinner()
+
 
 
         //top or all
@@ -122,15 +116,27 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                     R.id.top -> {
                         Log.i("button", "top clicked")
                         selectedSearchType = getString(R.string.top_headlines)
+                        chipGroup.visibility = View.VISIBLE
+                        chip_group_constrain.visibility == View.VISIBLE
                     }
                     R.id.all -> {
                         Log.i("button", "all clicked")
                         selectedSearchType = getString(R.string.everything)
+                        chipGroup.visibility = View.GONE
+                        chip_group_constrain.visibility == View.GONE
+                        chipGroup.clearCheck()
+
+//                        chipGroup.isClickable = false
+//                        chipGroup.isEnabled = false
+//
+                        selectedCategory = null
                     }
                 }
             } else {
                 if (materialButtonToggleGroup.checkedButtonId == View.NO_ID) {
                     selectedSearchType = getString(R.string.top_headlines)
+                    chipGroup.visibility = View.VISIBLE
+                    chip_group_constrain.visibility == View.VISIBLE
                 }
             }
 
@@ -139,29 +145,19 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         //chip categories
         chipGroup.setOnCheckedChangeListener { group, checkedId ->
             //TODO: error when pick when get back from all news
-            if (checkedId != -1) {
-                selectedCategory = categoryArray[checkedId - 1]
+            val chip = group.findViewById<Chip>(checkedId)
+
+
+
+            selectedCategory = if (checkedId != -1) {
+                chip.text.toString().toLowerCase()
             } else {
-                selectedCategory = categoryArray[0]
+                categoryArray[0]
             }
-//            Log.i("chips", selectedCategory)
+            Log.i("chips", selectedCategory)
 //            Log.i("chips", group.toString())
 //            Log.i("chips", checkedId.toString())
 //            Log.i("chips", chipGroup.checkedChipId.toString())
-        }
-
-        /**
-         * Initialize spinner
-         */
-        val spinner = sort_by_spinner
-        spinner.onItemSelectedListener = this
-        ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.sort_by_array,
-            android.R.layout.simple_spinner_item
-        ).also {
-            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner.adapter = it
         }
 
 
@@ -174,6 +170,8 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         /**
          * Set Click Listeners
          */
+
+        //country query
         search_button.setOnClickListener {
             //            Log.i("MainFragment", "Search button clicked")
             if (search_input.text.isNullOrEmpty())
@@ -182,19 +180,23 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
                 viewModel.onSearchButtonClicked(search_input.text.toString())
         }
 
+        //search query
         free_query_searh_button.setOnClickListener {
             //            Log.i("MainFragment", "query button clicked")
-            if (free_query_edit_text.text.isNullOrEmpty() && selectedStartDate == null) {
+            if (free_query_edit_text.text.isNullOrEmpty() && (selectedStartDate == null || selectedEndDate == null )) {
                 Toast.makeText(activity, "Insert search input and pick a date", Toast.LENGTH_LONG)
                     .show()
             } else if (free_query_edit_text.text.isNullOrEmpty())
                 Toast.makeText(activity, "Input Error", Toast.LENGTH_LONG).show()
-            else if (selectedStartDate == null) {
+            else if (selectedStartDate == null || selectedEndDate == null) {
                 Toast.makeText(activity, "Pick a Date", Toast.LENGTH_LONG).show()
+            } else if (selectedEndDate!! < selectedStartDate!!) {
+                Toast.makeText(activity, "Start Date can't be greater then End Date", Toast.LENGTH_LONG).show()
             } else
                 viewModel.onQueryButtonClicked(
                     free_query_edit_text.text.toString(),
                     selectedStartDate!!,
+                    selectedEndDate!!,
                     selectedSortBy,
                     selectedSearchType,
                     selectedCategory
@@ -369,15 +371,28 @@ class MainFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//        Log.i("onItemSelected", "${parent!!.getItemAtPosition(position)}")
         selectedSortBy = parent!!.getItemAtPosition(position).toString()
         Log.i("onItemSelected", selectedSortBy)
 
     }
 
+    //dota menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.dots_menu, menu)
+    }
+
+    private fun initSpinner() {
+        val spinner = sort_by_spinner
+        spinner.onItemSelectedListener = this
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sort_by_array,
+            android.R.layout.simple_spinner_item
+        ).also {
+            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = it
+        }
     }
 }
 

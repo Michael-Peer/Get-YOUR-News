@@ -38,8 +38,8 @@ interface NewsApiService {
     fun getNewsByQueryEverything(
         @Query("q") query: String,
         @Query("from") date: String = "2020-05-04", //TODO: calculate by minus week from current day for deafult
+        @Query("to") to: String = "2020-05-04", //TODO: calculate by minus week from current day for deafult
         @Query("sortBy") sortBy: String = "popularity",
-//        @Query("category") category: String? = "general",
         @Query("apiKey") apiKey: String //TODO: Store const key and send
     ): Deferred<News>
 
@@ -47,8 +47,9 @@ interface NewsApiService {
     fun getNewsByQueryTop(
         @Query("q") query: String,
         @Query("from") date: String = "2020-05-04", //TODO: calculate by minus week from current day for deafult
+        @Query("to") to: String = "2020-05-04", //TODO: calculate by minus week from current day for deafult
         @Query("sortBy") sortBy: String = "popularity",
-        @Query("category") category: String? = "general",
+        @Query("category") category: String? = "sports",
         @Query("apiKey") apiKey: String //TODO: Store const key and send
     ): Deferred<News>
 }

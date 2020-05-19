@@ -53,16 +53,17 @@ class NewsRepository(private val database: NewsDatabase) {
 
     suspend fun insertToDatabaseByQuery(
         query: String,
-        date: String,
+        startDate: String,
+        endDate: String,
         sortBy: String,
         selectedSearchType: String?,
         selectedCategory: String?
     ): ResultState {
         Log.i("insertToDatabaseByQuery", query)
-        Log.i("insertToDatabaseByQuery", date)
+        Log.i("insertToDatabaseByQuery", startDate)
         Log.i("insertToDatabaseByQuery", sortBy)
-        Log.i("insertToDatabaseByQuery", selectedSearchType)
-        Log.i("insertToDatabaseByQuery", "selected catergory $selectedCategory" )
+//        Log.i("insertToDatabaseByQuery", selectedSearchType)
+        Log.i("insertToDatabaseByQuery", "selected catergory ${selectedCategory ?: "null"}")
 
 
         return withContext<ResultState>(Dispatchers.IO) {
@@ -71,15 +72,16 @@ class NewsRepository(private val database: NewsDatabase) {
                     //TODO: No category in everything, notify user what to choose
                     NewsApi.retrofitService.getNewsByQueryEverything(
                         query,
-                        date,
+                        startDate,
+                        endDate,
                         sortBy,
-//                        selectedCategory,
                         Constans.API_KEY
                     ).await()
                 } else {
                     NewsApi.retrofitService.getNewsByQueryTop(
                         query,
-                        date,
+                        startDate,
+                        endDate,
                         sortBy,
                         selectedCategory,
                         Constans.API_KEY
