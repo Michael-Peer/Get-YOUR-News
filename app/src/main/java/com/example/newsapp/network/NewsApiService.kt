@@ -12,7 +12,7 @@ import retrofit2.http.Query
 
 private const val BASE_URL = "https://newsapi.org/"
 
-private const val API_KEY = "934de238d46c4c0c88825b1c653a56d8" //TODO:Move to constants
+private const val API_KEY = "" //TODO:Move to constants
 
 
 private val moshi = Moshi.Builder()
